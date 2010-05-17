@@ -77,27 +77,7 @@ public class PlaceProvider extends ContentProvider {
 	    Log.d(TAG, "onCreate");
 		mDBHelper = new DatabaseHelper(getContext());
 		
-		mCity = PreferenceManager.getDefaultSharedPreferences(ctx).getString("homeBase", null);
-		// quick&dirty check if muc or bln is closer
-		if (mCity == null) {
-		    Location loc = ((LocationManager)ctx.getSystemService(ctx.LOCATION_SERVICE))
-		                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		    if (loc == null) return false;
-		    Location bln = new Location("foo");
-		    bln.setLatitude(52.5);
-		    bln.setLongitude(13.4);
-		    Location muc = new Location("foo");
-		    muc.setLatitude(48.1);
-		    muc.setLongitude(11.6);
-		    
-		    if (loc.distanceTo(bln) < loc.distanceTo(muc))
-		        mCity = "Berlin";
-		    else
-		        mCity = "Muenchen";
-		    Log.d(TAG, "homeBase: "+mCity);
-		    PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString("homeBase", mCity);
-		}
-		
+		mCity = "bln";
 		// TODO this should be properly downloaded based on current location..
 		final String path = ctx.getFilesDir().getPath()+"/"+mCity+".db";
         if (!new File(path).exists()) {
@@ -155,7 +135,7 @@ public class PlaceProvider extends ContentProvider {
 					    "name ||', "+mCity+"' AS "+SearchManager.SUGGEST_COLUMN_QUERY+", "+
 					    "'"+SearchManager.SUGGEST_NEVER_MAKE_SHORTCUT+"' AS "+SearchManager.SUGGEST_COLUMN_SHORTCUT_ID+" "+
 					"FROM city.places " +
-					(uri.getPathSegments().size() == 2 ? "WHERE name LIKE '%"+uri.getLastPathSegment()+"%' " : "") +
+					(uri.getPathSegments().size() == 2 ? "WHERE name LIKE '"+uri.getLastPathSegment()+"%' " : "") +
 					"LIMIT 42", null);
 			break;
 

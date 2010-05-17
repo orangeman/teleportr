@@ -14,7 +14,16 @@
 			android:title="@string/settings_title"
 			android:summaryOn="@string/settings_on"
 			android:summaryOff="@string/settings_off"
-		/>	
+		/>
+		
+		<PreferenceScreen 
+			android:key="autocompletion"
+			android:title="Autocompletion"
+			android:summary="@string/autocompletion_settings_summary">
+			<PreferenceCategory android:title="Downloads">
+
+			</PreferenceCategory>
+		</PreferenceScreen>  
 
 	</PreferenceCategory>
 </PreferenceScreen>  
