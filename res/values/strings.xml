@@ -20,8 +20,9 @@
     <string name="dialog_no">Nö!</string>
 
     <string name="autocompletion_settings_summary">cities, streets, stations, etc.</string>
-    <string name="downloads_activity_titel">autocompletion downloads</string>
+    <string name="downloads_activity_titel">Autocompletion downloads</string>
     <string name="downloads_fetch_progress">downloads for this area..</string>
-    <string name="downloading_progress">it's beeing gedowngeloadedet..</string>
-    <string name="download_error">Meest! something went wrong,</string>
+    <string name="downloading_prog_dnld">is beeing gedowngeloadedet..</string>
+    <string name="downloading_prog_indx">is beeing geindexifiziert..</string>
+    <string name="download_error">Meest! something went wrong da</string>
 </resources>

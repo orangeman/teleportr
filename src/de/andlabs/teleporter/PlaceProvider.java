@@ -1,56 +1,31 @@
 package de.andlabs.teleporter;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Locale;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import de.andlabs.teleporter.R;
-
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.UriMatcher;
-import android.content.res.Configuration;
-import android.database.ContentObserver;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.GpsStatus.Listener;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 
-public class PlaceProvider extends ContentProvider {
+public class PlaceProvider extends ContentProvider implements OnSharedPreferenceChangeListener {
 	
     private static final int PLACES = 1;
     private static final UriMatcher sUriMatcher;
-	private static final String TAG = "LocLOGic";
-	private static DatabaseHelper mDBHelper;
+	private static final String TAG = "PlaceProvider";
+	private static DatabaseHelper db;
     private static final String DATABASE_NAME = "myPlaces.db";
 
-	private String mCity;
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -60,6 +35,14 @@ public class PlaceProvider extends ContentProvider {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
+		    db.execSQL("CREATE TABLE myplaces ("
+                        + "_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        + "name TEXT,"
+                        + "city TEXT,"
+                        + "address TEXT,"
+                        + "icon INTEGER,"
+                        + "tlp_id INTEGER"
+                        + ");");
 		}
 
 		@Override
@@ -70,36 +53,60 @@ public class PlaceProvider extends ContentProvider {
 
 
 
+	private static final String SQL = 
+	    "SELECT _id, " +
+	            "name AS "+SearchManager.SUGGEST_COLUMN_TEXT_1+", " +
+            	"%1$s AS "+SearchManager.SUGGEST_COLUMN_TEXT_2+", " +
+            	"icon AS "+SearchManager.SUGGEST_COLUMN_ICON_1+", " +
+            	"'"+R.drawable.icon+"' AS "+SearchManager.SUGGEST_COLUMN_ICON_2+", " +
+            	"name || ', ' || %1$s AS "+SearchManager.SUGGEST_COLUMN_QUERY+", "+
+            	"'"+SearchManager.SUGGEST_NEVER_MAKE_SHORTCUT+"' AS "+SearchManager.SUGGEST_COLUMN_SHORTCUT_ID+" "+
+            	"FROM %2$s " +
+            	"WHERE name LIKE '%%1$s%%%%' ";
+	private String sql;
+	
 	
 	@Override
 	public boolean onCreate() {
-	    Context ctx = getContext();
 	    Log.d(TAG, "onCreate");
-		mDBHelper = new DatabaseHelper(getContext());
 		
-		mCity = "bln";
-		// TODO this should be properly downloaded based on current location..
-		final String path = ctx.getFilesDir().getPath()+"/"+mCity+".db";
-        if (!new File(path).exists()) {
-            try {
-                InputStream in = ctx.getAssets().open(mCity+".db");
-                FileOutputStream out = ctx.openFileOutput(mCity+".db", ctx.MODE_PRIVATE);
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                in.close();
-                out.close();
-                Log.d(TAG, "done copying");
-            } catch (IOException e) {
-                Log.d(TAG, "error while copying");
-                e.printStackTrace();
-            }
-        }
-		mDBHelper.getWritableDatabase().execSQL("ATTACH DATABASE '"+path+"' AS city;");
+	    SharedPreferences autocompletion = getContext().getSharedPreferences("autocompletion", getContext().MODE_PRIVATE);
+	    autocompletion.registerOnSharedPreferenceChangeListener(this);
+	    onSharedPreferenceChanged(autocompletion, null);
+	    
 		return true;
 	}
+
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences autocompletion, String key) {
+        Log.d(TAG, "onSharedPreferenceChanged");
+        
+        // prepare database queries
+        if (db != null) db.close();
+        db = new DatabaseHelper(getContext());
+        
+        StringBuilder builder = new StringBuilder();
+        String dir = Environment.getExternalStorageDirectory().getPath()+"/teleporter/";
+        builder.append(String.format(SQL, "city", "myplaces"));
+        for (String file : autocompletion.getAll().keySet()) {
+            if (autocompletion.getBoolean(file, false)) {
+                String path = dir+file;
+                if (!new File(path).exists()) {
+                    Log.d(TAG, file+" doesn't exist");
+                    continue;
+                }
+                String name = file.split("\\.")[0];
+                db.getWritableDatabase().execSQL("ATTACH DATABASE '"+path+"' AS '"+name.replace("-", "_")+"';");
+                builder.append("UNION ALL ");
+                builder.append(String.format(SQL, "'"+name.substring(name.indexOf("_")+1)+"'", name.replace("-", "_")+".places"));
+                Log.d(TAG, name);
+            }
+        }
+        builder.append(" LIMIT 42");
+        sql = builder.toString();
+        Log.d(TAG, sql);
+    }
 	
 	
 	@Override
@@ -124,19 +131,21 @@ public class PlaceProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		Cursor cursor = null;
 		
-		switch (sUriMatcher.match(uri)) {
+		String query;
+        switch (sUriMatcher.match(uri)) {
 		case PLACES:
-			cursor = mDBHelper.getReadableDatabase().rawQuery(
-					"SELECT _id, " +
-					    "name AS "+SearchManager.SUGGEST_COLUMN_TEXT_1+", " +
-					    "'"+mCity+"' AS "+SearchManager.SUGGEST_COLUMN_TEXT_2+", " +
-					    "type AS "+SearchManager.SUGGEST_COLUMN_ICON_1+", " +
-					    "'"+R.drawable.icon+"' AS "+SearchManager.SUGGEST_COLUMN_ICON_2+", " +
-					    "name ||', "+mCity+"' AS "+SearchManager.SUGGEST_COLUMN_QUERY+", "+
-					    "'"+SearchManager.SUGGEST_NEVER_MAKE_SHORTCUT+"' AS "+SearchManager.SUGGEST_COLUMN_SHORTCUT_ID+" "+
-					"FROM city.places " +
-					(uri.getPathSegments().size() == 2 ? "WHERE name LIKE '"+uri.getLastPathSegment()+"%' " : "") +
-					"LIMIT 42", null);
+		    query = uri.getPathSegments().size() == 2 ? uri.getLastPathSegment():"";
+			cursor = db.getReadableDatabase().rawQuery(String.format(sql, query), null);
+//					"SELECT _id, " +
+//					    "name AS "+SearchManager.SUGGEST_COLUMN_TEXT_1+", " +
+//					    "'"+mCity+"' AS "+SearchManager.SUGGEST_COLUMN_TEXT_2+", " +
+//					    "icon AS "+SearchManager.SUGGEST_COLUMN_ICON_1+", " +
+//					    "'"+R.drawable.icon+"' AS "+SearchManager.SUGGEST_COLUMN_ICON_2+", " +
+//					    "name ||', "+mCity+"' AS "+SearchManager.SUGGEST_COLUMN_QUERY+", "+
+//					    "'"+SearchManager.SUGGEST_NEVER_MAKE_SHORTCUT+"' AS "+SearchManager.SUGGEST_COLUMN_SHORTCUT_ID+" "+
+//					"FROM city.places " +
+//					(uri.getPathSegments().size() == 2 ? "WHERE name LIKE '"+uri.getLastPathSegment()+"%' " : "") +
+//					"LIMIT 42", null);
 			break;
 
 		default:

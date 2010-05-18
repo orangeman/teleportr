@@ -18,6 +18,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -58,7 +59,7 @@ public class DownloadsActivity extends PreferenceActivity implements OnPreferenc
             getPreferenceScreen().addItemFromInflater(c);
             c.setKey(file);
             c.setTitle(file.split("_")[0]);
-            c.setSummary(file.split("_")[1].split("\\.")[0]);
+            c.setSummary(file.substring(file.indexOf("_")+1, file.lastIndexOf(".")));
             if (vals.containsKey(file)) {
                 c.setChecked((Boolean)vals.get(file));
             }
@@ -111,7 +112,7 @@ public class DownloadsActivity extends PreferenceActivity implements OnPreferenc
         @Override
         protected void onPreExecute() {
             progress = new ProgressDialog(DownloadsActivity.this);
-            progress.setMessage(getString(R.string.downloading_progress));
+            progress.setMessage(getString(R.string.downloading_prog_dnld));
             progress.show();
             super.onPreExecute();
         }
@@ -120,9 +121,15 @@ public class DownloadsActivity extends PreferenceActivity implements OnPreferenc
         protected Boolean doInBackground(String... params) {
             try {
                 new DefaultHttpClient().execute(
-                    new HttpGet("http://may.base45.de:3000/files/"+params[0])).getEntity()
-                    .writeTo(new FileOutputStream(
-                    new File(Environment.getExternalStorageDirectory().getPath()+"/teleporter/"+params[0])));
+                    new HttpGet("http://may.base45.de:3000/downloads/"+params[0])).getEntity()
+                    .writeTo(
+                    new FileOutputStream(new File("/sdcard/teleporter/"+params[0])));
+                progress.setProgress(50);
+//                progress.setMessage(getString(R.string.downloading_prog_indx));
+                SQLiteDatabase newDB = SQLiteDatabase.openDatabase("/sdcard/teleporter/"+params[0], null, SQLiteDatabase.OPEN_READWRITE);
+                newDB.execSQL("CREATE INDEX nameIdx ON places (name);");
+                newDB.close();
+                getPreferenceScreen().getSharedPreferences().edit().putBoolean(params[0], true).commit();
             } catch (Exception e) {
                 Log.e(TAG, "error while downloading "+params[0]);
                 return false;
@@ -159,7 +166,7 @@ public class DownloadsActivity extends PreferenceActivity implements OnPreferenc
                 URL url = new URL("http://may.base45.de:3000/downloads.json?lat="+loc.getLatitude()+"&lon="+loc.getLongitude());
                 return new JSONArray(new BufferedReader(new InputStreamReader(url.openStream())).readLine());
             } catch (Exception e) {
-                Log.e(TAG, "no location / internet");
+                Log.e(TAG, "problem location or internet");
                 return null;
             }
         }
@@ -172,8 +179,9 @@ public class DownloadsActivity extends PreferenceActivity implements OnPreferenc
                     if (!getPreferenceScreen().getSharedPreferences().contains(j.getString("file"))) {
                         CheckBoxPreference c = new CheckBoxPreference(DownloadsActivity.this);
                         c.setKey(j.getString("file"));
-                        c.setTitle(j.getString("title").split(" ")[0]);
-                        c.setSummary(j.getString("title").split(" ")[1]);
+                        String title = j.getString("title");
+                        c.setTitle(title.split(" ")[0]);
+                        c.setSummary(title.substring(title.indexOf(" ")));
                         c.setOnPreferenceClickListener(DownloadsActivity.this);
                         getPreferenceScreen().addItemFromInflater(c);
                     }
