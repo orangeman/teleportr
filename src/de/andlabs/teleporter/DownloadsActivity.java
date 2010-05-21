@@ -163,6 +163,11 @@ public class DownloadsActivity extends PreferenceActivity implements OnPreferenc
                 Location loc = ((LocationManager)getSystemService(LOCATION_SERVICE)).getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (loc == null)
                     loc = ((LocationManager)getSystemService(LOCATION_SERVICE)).getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if (loc == null) { // fallback berlin 
+                    loc = new Location(LocationManager.GPS_PROVIDER);
+                    loc.setLatitude(52.5);
+                    loc.setLongitude(13.4);
+                }
                 URL url = new URL("http://may.base45.de:3000/downloads.json?lat="+loc.getLatitude()+"&lon="+loc.getLongitude());
                 return new JSONArray(new BufferedReader(new InputStreamReader(url.openStream())).readLine());
             } catch (Exception e) {
