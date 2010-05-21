@@ -44,11 +44,22 @@ public class Main extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         Log.d(TAG, "newIntent: "+intent.toString());
-
+        
+        String destination = null;
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            destination = "\n\n\n"+intent.getStringExtra(SearchManager.QUERY);
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            String query = URLDecoder.decode(getIntent().getDataString().substring(10));
+            String[] q = query.split(",");
+            if (Character.isDigit(query.charAt(0))) {
+                destination = q[0].substring(q[0].indexOf(" ")+1) +" "+ q[0].substring(0, q[0].indexOf(" "))+", "+q[1].split(" ")[1];
+            } else {
+                destination = q[0]+", "+ q[1].split(" ")[2];
+            }
+        }
+        if (destination != null) {
             MediaPlayer.create(this, R.raw.sound_long).start();
             TextView view = (TextView)findViewById(R.id.text);
-            String destination = "\n\n\n"+intent.getStringExtra(SearchManager.QUERY);
             float factor = (((ViewGroup)view.getParent()).getWidth()-42) / view.getPaint().measureText(destination);
             view.setTextSize(view.getTextSize()*factor);
             view.setText(destination);
