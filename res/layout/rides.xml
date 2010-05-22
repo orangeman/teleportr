@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+		<ListView  
+		android:id="@android:id/list"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    />
+    
+    <SlidingDrawer android:id="@+id/priorities"
+     android:layout_width="fill_parent"
+     android:layout_height="fill_parent"
+
+     android:handle="@+id/handle"
+     android:content="@+id/pane">
+
+     <ImageView
+         android:id="@id/handle"
+         android:layout_width="88dip"
+         android:layout_height="44dip" 
+         android:src="@drawable/beam"/>
+
+     <LinearLayout android:id="@id/pane"
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:background="#99000000"
+		    >
+		    
+		    <TextView
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:text="@string/fun"
+			    android:textStyle="bold"
+			    android:textSize="23dip"
+			  ></TextView>  
+		    <SeekBar android:id="@+id/fun"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:thumb="@drawable/icon"
+		    	android:paddingRight="23dip"
+		    	android:paddingLeft="23dip"
+					android:progress="0"
+			    android:max="5"
+			    android:tag="fun"
+		    ></SeekBar>
+		    
+		    <TextView
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:text="@string/eco"
+			    android:textStyle="bold"
+			    android:textSize="23dip"
+			  ></TextView>  
+		    <SeekBar android:id="@+id/eco"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:thumb="@drawable/icon"
+		    	android:paddingRight="23dip"
+		    	android:paddingLeft="23dip"
+					android:progress="0"
+			    android:max="5"
+			    android:tag="eco"
+		    ></SeekBar>
+		    <TextView
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:text="@string/fast"
+			    android:textStyle="bold"
+			    android:textSize="23dip"
+			  ></TextView>  
+		    <SeekBar android:id="@+id/fast"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:thumb="@drawable/icon"
+		    	android:paddingRight="23dip"
+		    	android:paddingLeft="23dip"
+					android:progress="0"
+			    android:max="5"
+			    android:tag="fast"
+		    ></SeekBar>
+		    <TextView
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:text="@string/green"
+			    android:textStyle="bold"
+			    android:textSize="23dip"
+			  ></TextView>  
+		    <SeekBar android:id="@+id/green"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:thumb="@drawable/icon"
+		    	android:paddingRight="23dip"
+		    	android:paddingLeft="23dip"
+					android:progress="0"
+			    android:max="5"
+			    android:tag="green"
+		    ></SeekBar>
+		    <TextView
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:text="@string/social"
+			    android:textStyle="bold"
+			    android:textSize="23dip"
+			  ></TextView>  
+		    <SeekBar android:id="@+id/social"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:thumb="@drawable/icon"
+		    	android:paddingRight="23dip"
+		    	android:paddingLeft="23dip"
+					android:progress="0"
+			    android:max="5"
+			    android:tag="social"
+		    ></SeekBar>
+
+			</LinearLayout>
+
+
+ </SlidingDrawer>
+</FrameLayout>
