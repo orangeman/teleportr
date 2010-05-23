@@ -107,8 +107,12 @@
 			android:layout_alignParentRight="true"
 			android:layout_alignParentBottom="true"
 		></TextView>
-
-
-
-
+		
+		<ImageView android:id="@+id/throbber"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:src="@drawable/loading"
+			android:visibility="gone"
+/>
 </view>

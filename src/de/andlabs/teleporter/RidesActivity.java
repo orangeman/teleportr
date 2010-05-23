@@ -5,15 +5,22 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+import com.commonsware.cwac.endless.EndlessAdapter;
+
 import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.SeekBar;
 import android.widget.SlidingDrawer;
+import android.widget.TextView;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
 
@@ -37,11 +44,13 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
         // some mock rides
         rides = new ArrayList<Ride>();
         Place o = new Place();
-        o.name = "Dahlem Cube";
-        o.address = "hjhjhjhj";
+        o.type = Place.TYPE_ADDRESS;
+        o.name = "Droidcamp - Dahlem Cube";
+        o.address = "Takustraße 39, Berlin";
         Place d = new Place();
-        o.name = "C-Base";
-        o.address = "kjkjkkkj";
+        d.type = Place.TYPE_ADDRESS;
+        d.name = "C-Base Raumstation";
+        d.address = "Rungestr 22, Berlin";
         
         // bvg
         Ride r = new Ride();
@@ -148,7 +157,8 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
         r.green = 3;
         rides.add(r);
         
-        setListAdapter(new BaseAdapter() {
+        
+        setListAdapter(new RidesAdapter(new BaseAdapter() {
             
             @Override
             public View getView(int position, View view, ViewGroup parent) {
@@ -173,7 +183,7 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
             public int getCount() {
                 return rides.size();
             }
-        });
+        }));
         
         
         fun = ((SeekBar)findViewById(R.id.fun));
@@ -241,4 +251,57 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {}
 
+    private class RidesAdapter extends EndlessAdapter {
+
+        private RotateAnimation rotate;
+        private ArrayList<Ride> nextRides;
+
+        public RidesAdapter(ListAdapter wrapped) {
+            super(wrapped);
+            rotate = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            rotate.setDuration(600);
+            rotate.setRepeatMode(Animation.RESTART);
+            rotate.setRepeatCount(Animation.INFINITE);
+        }
+        
+        @Override
+        protected View getPendingView(ViewGroup parent) {
+            View v = getLayoutInflater().inflate(R.layout.rideview, parent, false);
+            View child = v.findViewById(R.id.throbber);
+            child.setVisibility(View.VISIBLE);
+            child.startAnimation(rotate);
+
+            return v;
+        }
+
+        @Override
+        protected boolean cacheInBackground() {
+            Place o = new Place();
+            o.type = Place.TYPE_ADDRESS;
+            o.name = "Droidcamp - Dahlem Cube";
+            o.address = "Takustraße 39, Berlin";
+            Place d = new Place();
+            d.type = Place.TYPE_ADDRESS;
+            d.name = "C-Base Raumstation";
+            d.address = "Rungestr 22, Berlin";
+            nextRides = new BahnDePlugIn().find(o, d, new Date());
+            return(getWrappedAdapter().getCount()<60);
+        }
+
+        @Override
+        protected void appendCachedData() {
+            rides.addAll(nextRides);
+            sort();
+        }
+        
+        @Override
+        protected void rebindPendingView(int position, View view) {
+            ((RideView)view).setRide(rides.get(position));
+            View child = view.findViewById(R.id.throbber);
+            child.setVisibility(View.GONE);
+            child.clearAnimation();
+        }
+
+    }
+    
 }
