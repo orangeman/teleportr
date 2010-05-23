@@ -5,28 +5,26 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
-import com.commonsware.cwac.endless.EndlessAdapter;
-
 import android.app.ListActivity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.SeekBar;
 import android.widget.SlidingDrawer;
-import android.widget.TextView;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.SlidingDrawer.OnDrawerOpenListener;
+
+import com.commonsware.cwac.endless.EndlessAdapter;
 
 public class RidesActivity extends ListActivity implements OnSeekBarChangeListener {
 
@@ -161,6 +159,13 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
         r.green = 3;
         rides.add(r);
         
+        ((ImageButton)findViewById(R.id.close)).setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                ((SlidingDrawer)findViewById(R.id.priorities)).animateClose();
+            }
+        });
         
         setListAdapter(new RidesAdapter(new BaseAdapter() {
             
