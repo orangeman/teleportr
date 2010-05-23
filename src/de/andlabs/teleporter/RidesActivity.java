@@ -164,9 +164,9 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         Log.d("aha", "changed "+progress);
+        priorities.edit().putInt((String)seekBar.getTag(), progress).commit();
         multiplexer.sort(priorities);
         getListView().invalidateViews();
-        priorities.edit().putInt((String)seekBar.getTag(), progress).commit();
     }
 
     @Override

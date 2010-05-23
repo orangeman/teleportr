@@ -68,6 +68,7 @@ public class BahnDePlugIn implements ITeleporterPlugIn {
                     r = new Ride();
                     r.orig = orig;
                     r.dest = dest;
+                    r.mode = Ride.MODE_TRANSIT;
                     r.dep = dep;
                     r.arr = parseDate(m.group(4), m.group(5));
                     r.plugin = R.drawable.bahn_de;

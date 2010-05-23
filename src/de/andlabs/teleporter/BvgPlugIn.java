@@ -17,6 +17,7 @@ public class BvgPlugIn implements ITeleporterPlugIn {
         r.dep = new Date(System.currentTimeMillis()+4*60000);
         r.arr = new Date(System.currentTimeMillis()+(4+37)*60000);
         r.plugin = R.drawable.bvg;
+        r.mode = Ride.MODE_TRANSIT;
         r.price = 240;
         r.fun = 1;
         r.eco = 3;
@@ -31,6 +32,7 @@ public class BvgPlugIn implements ITeleporterPlugIn {
         r.dest = d;
         r.dep = new Date(System.currentTimeMillis()+12*60000);
         r.arr = new Date(System.currentTimeMillis()+(12+39)*60000);
+        r.mode = Ride.MODE_TRANSIT;
         r.plugin = R.drawable.bvg;
         r.price = 240;
         r.fun = 3;
@@ -44,8 +46,9 @@ public class BvgPlugIn implements ITeleporterPlugIn {
         r = new Ride();
         r.orig = o;
         r.dest = d;
-        r.dep = new Date(System.currentTimeMillis()+22*60000);
-        r.arr = new Date(System.currentTimeMillis()+(22+37)*60000);
+        r.dep = new Date(System.currentTimeMillis()+125*60000);
+        r.arr = new Date(System.currentTimeMillis()+(125+37)*60000);
+        r.mode = Ride.MODE_TRANSIT;
         r.plugin = R.drawable.bvg;
         r.price = 240;
         r.fun = 2;
