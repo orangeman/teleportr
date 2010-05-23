@@ -49,6 +49,20 @@ public class RideView extends RelativeLayout {
             price.append(","+cents+"€");
         else
             price.append("€");
+        switch (ride.mode) {
+        case Ride.MODE_TRANSIT:
+            setBackgroundResource(R.drawable.beam);
+            break;
+        case Ride.MODE_TRAIN:
+            setBackgroundResource(R.drawable.beam);
+            break;
+        case Ride.MODE_TAXI:
+            setBackgroundResource(R.drawable.beam);
+            break;
+        case Ride.MODE_MFG:
+            setBackgroundResource(R.drawable.beam);
+            break;
+        }
     }
 
 }

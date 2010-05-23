@@ -90,6 +90,7 @@ public class QueryMultiplexer {
     
     public boolean searchNext() {
         // TODO just query just the plugins that ...
+        // TODO use ThreadPoolExecutor ...
         rides.addAll(plugIns.get(0).find(orig, dest, new Date()));
         rides.addAll(plugIns.get(1).find(orig, dest, new Date()));
         return true;
