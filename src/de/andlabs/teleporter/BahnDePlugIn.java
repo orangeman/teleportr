@@ -1,8 +1,5 @@
 package de.andlabs.teleporter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,13 +7,12 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
-public class BahnDePlugIn {
+public class BahnDePlugIn implements ITeleporterPlugIn {
     
     private static final String TAG = "PlugIn";
     private DefaultHttpClient client;
@@ -27,6 +23,9 @@ public class BahnDePlugIn {
         client = new DefaultHttpClient();
     }
 
+    /* (non-Javadoc)
+     * @see de.andlabs.teleporter.ITeleporterPlugIn#find(de.andlabs.teleporter.Place, de.andlabs.teleporter.Place, java.util.Date)
+     */
     public ArrayList<Ride> find(Place orig, Place dest, Date time) {
         
         StringBuilder url = new StringBuilder();
