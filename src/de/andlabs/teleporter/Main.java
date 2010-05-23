@@ -70,7 +70,7 @@ public class Main extends Activity {
                     ((Vibrator)getSystemService(VIBRATOR_SERVICE)).vibrate(300);
                     new AlertDialog.Builder(Main.this)
                     .setTitle("Error")
-                    .setMessage("Teleportation failed. \n May be not enough battery..")
+                    .setMessage("Teleportation failed. \n battery status too low!")
                     .show();
                 }
             });
@@ -98,7 +98,7 @@ public class Main extends Activity {
             startActivity(new Intent(this, SettingsActivity.class));
             break;
         case R.id.feedback:
-            LogCollector.feedback(this, "flo@andlabs.de", "blah blah blah");
+            LogCollector.feedback(this, "flo@andlabs.de", "bla bla");
             break;
         }
         return super.onOptionsItemSelected(item);

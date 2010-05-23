@@ -59,6 +59,7 @@ public class BahnDePlugIn {
         try {
             Ride r;
             MatchResult m;
+            rides.clear();
             Scanner scanner = new Scanner(client.execute(new HttpGet(url.toString())).getEntity().getContent(), "iso-8859-1");
             while (scanner.findWithinHorizon("<a href=\"([^\"]*)\">(\\d\\d):(\\d\\d)<br />(\\d\\d):(\\d\\d)", 10000) != null) {
                 m = scanner.match();
@@ -80,12 +81,11 @@ public class BahnDePlugIn {
                     rides.add(r);
                 }
             }
-            return rides;
         } catch (Exception e) {
             Log.e(TAG, "Mist!");
             e.printStackTrace();
-            return null;
         }
+        return rides;
     }
 
 

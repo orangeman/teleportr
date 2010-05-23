@@ -21,7 +21,7 @@
          android:id="@id/handle"
          android:layout_width="88dip"
          android:layout_height="44dip" 
-         android:src="@drawable/beam"/>
+         />
 
      <LinearLayout android:id="@id/pane"
 		    android:orientation="vertical"
