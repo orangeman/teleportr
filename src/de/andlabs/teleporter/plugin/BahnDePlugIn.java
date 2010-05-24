@@ -1,4 +1,4 @@
-package de.andlabs.teleporter;
+package de.andlabs.teleporter.plugin;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -9,6 +9,11 @@ import java.util.regex.MatchResult;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+
+import de.andlabs.teleporter.Place;
+import de.andlabs.teleporter.R;
+import de.andlabs.teleporter.Ride;
+import de.andlabs.teleporter.R.drawable;
 
 import android.util.Log;
 

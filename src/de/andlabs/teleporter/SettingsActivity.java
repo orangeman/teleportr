@@ -17,6 +17,8 @@ public class SettingsActivity extends PreferenceActivity {
         
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
+        
+        getPreferenceManager().setSharedPreferencesName("plugIns");
 
         ((PreferenceScreen)findPreference("autocompletion"))
         .setIntent(new Intent(this, DownloadsActivity.class));

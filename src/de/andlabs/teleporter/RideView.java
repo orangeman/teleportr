@@ -60,7 +60,7 @@ public class RideView extends RelativeLayout {
         else if (travelTime < 86400000)
             duration.setText(((int)travelTime/60)+"h "+travelTime%60+"min");
         else
-            duration.setText("much too long!!!");
+            duration.setText("toooooo long!!!");
         
         dep.setText(new SimpleDateFormat("hh:mm").format(ride.dep));
         arr.setText(new SimpleDateFormat("hh:mm").format(ride.arr));
@@ -80,14 +80,23 @@ public class RideView extends RelativeLayout {
             case Ride.MODE_TRANSIT:
                 setBackgroundResource(R.drawable.mode_transit);
                 break;
+            case Ride.MODE_FLIGHT:
+                setBackgroundResource(R.drawable.mode_flight);
+                break;
             case Ride.MODE_TRAIN:
                 setBackgroundResource(R.drawable.mode_train);
+                break;
+            case Ride.MODE_WALK:
+                setBackgroundResource(R.drawable.mode_walk);
+                break;
+            case Ride.MODE_BIKE:
+                setBackgroundResource(R.drawable.mode_bike);
                 break;
             case Ride.MODE_TAXI:
                 setBackgroundResource(R.drawable.mode_taxi);
                 break;
-            case Ride.MODE_CAR:
-                setBackgroundResource(R.drawable.mode_car);
+            case Ride.MODE_DRIVE:
+                setBackgroundResource(R.drawable.mode_drive);
                 break;
             case Ride.MODE_MFG:
                 setBackgroundResource(R.drawable.mode_mfg);
