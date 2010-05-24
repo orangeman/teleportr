@@ -147,17 +147,14 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
         @Override
         protected void appendCachedData() {
             multiplexer.sort(priorities);
-            getListView().invalidateViews();
         }
         
         @Override
         protected void rebindPendingView(int position, View view) {
-            if (position < multiplexer.rides.size()) {
-                ((RideView)view).setRide(multiplexer.rides.get(position));
-                View child = view.findViewById(R.id.throbber);
-                child.setVisibility(View.GONE);
-                child.clearAnimation();
-            }
+            ((RideView)view).setRide(multiplexer.rides.get(position));
+            View child = view.findViewById(R.id.throbber);
+            child.setVisibility(View.GONE);
+            child.clearAnimation();
         }
     }
     

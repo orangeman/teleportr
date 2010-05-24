@@ -7,6 +7,7 @@ import java.util.Date;
 
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 public class QueryMultiplexer {
 
@@ -14,12 +15,14 @@ public class QueryMultiplexer {
     private Place dest;
     public ArrayList<Ride> rides;
     public ArrayList<ITeleporterPlugIn> plugIns;
+    private ArrayList<Ride> nextRides;
 
     public QueryMultiplexer(Place o, Place d) {
         orig = o;
         dest = d;
         
         rides = new ArrayList<Ride>();
+        nextRides = new ArrayList<Ride>();
         plugIns = new ArrayList<ITeleporterPlugIn>();
         plugIns.add(new BahnDePlugIn());
         plugIns.add(new BvgPlugIn());
@@ -92,18 +95,20 @@ public class QueryMultiplexer {
         r.green = 3;
         rides.add(r);
     }
-    
+
     public boolean searchNext() {
-        // TODO just query just the plugins that ...
+        // TODO just query just plugins that ...
         // TODO use ThreadPoolExecutor ...
 //        rides.addAll(plugIns.get(0).find(orig, dest, new Date()));
-        rides.addAll(plugIns.get(1).find(orig, dest, new Date()));
-        rides.addAll(plugIns.get(2).find(orig, dest, new Date()));
+        nextRides.addAll(plugIns.get(1).find(orig, dest, new Date()));
+        nextRides.addAll(plugIns.get(2).find(orig, dest, new Date()));
         return true;
         
     }
     
     public void sort(final SharedPreferences prios) {
+        rides.addAll(nextRides);
+        nextRides.clear();
         Collections.sort(rides, new Comparator<Ride>() {
 
             @Override
