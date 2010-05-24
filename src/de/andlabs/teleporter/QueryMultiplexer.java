@@ -50,8 +50,8 @@ public class QueryMultiplexer {
         r = new Ride();
         r.orig = o;
         r.dest = d;
-        r.dep = new Date(System.currentTimeMillis()+7*60000);
-        r.arr = new Date(System.currentTimeMillis()+(7+22)*60000);
+        r.dep = new Date(System.currentTimeMillis()+5*60000);
+        r.arr = new Date(System.currentTimeMillis()+(5+22)*60000);
         r.plugin = R.drawable.taxi;
         r.mode = Ride.MODE_TAXI;
         r.price = 2300;
@@ -83,8 +83,8 @@ public class QueryMultiplexer {
         r = new Ride();
         r.orig = o;
         r.dest = d;
-        r.dep = new Date(System.currentTimeMillis()+7*60000);
-        r.arr = new Date(System.currentTimeMillis()+(7+22)*60000);
+        r.dep = new Date(System.currentTimeMillis()+8*60000);
+        r.arr = new Date(System.currentTimeMillis()+(8+22)*60000);
         r.plugin = R.drawable.taxi_teiler;
         r.mode = Ride.MODE_MFG;
         r.price = 320;

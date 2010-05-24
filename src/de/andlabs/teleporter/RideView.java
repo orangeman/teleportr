@@ -52,9 +52,15 @@ public class RideView extends RelativeLayout {
             hours.setVisibility(VISIBLE);
             hours_label.setVisibility(VISIBLE);
             minutes.setText(String.valueOf(waitingTime%60));
-            minutes.setTextSize(23);
+            minutes.setTextSize(20);
         }
-//        int waitingTime = (int)(ride.arr.getTime()-ride.dep.getTime())/60000;
+        int travelTime = (int) (ride.arr.getTime() - ride.dep.getTime()) / 60000;
+        if (travelTime < 100)
+            duration.setText(travelTime+" min");
+        else if (travelTime < 86400000)
+            duration.setText(((int)travelTime/60)+"h "+travelTime%60+"min");
+        else
+            duration.setText("much too long!!!");
         
         dep.setText(new SimpleDateFormat("hh:mm").format(ride.dep));
         arr.setText(new SimpleDateFormat("hh:mm").format(ride.arr));
