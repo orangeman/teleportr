@@ -3,27 +3,66 @@
 	
 	<PreferenceCategory android:title="Settings">
 	
-		<EditTextPreference
-		android:key="key"
-		android:title="@string/settings_title"
-		android:dialogTitle="@string/settings_dialog"
-		/> 
-
-		<CheckBoxPreference
-			android:key="other"
-			android:title="@string/settings_title"
-			android:summaryOn="@string/settings_on"
-			android:summaryOff="@string/settings_off"
-		/>
-		
 		<PreferenceScreen 
 			android:key="autocompletion"
 			android:title="Autocompletion"
 			android:summary="@string/autocompletion_settings_summary">
 			<PreferenceCategory android:title="Downloads">
-
 			</PreferenceCategory>
-		</PreferenceScreen>  
+		</PreferenceScreen>
 
+		<PreferenceScreen 
+			android:key="plugIns"
+			android:title="PlugIns"
+			android:summary="@string/plugIns_settings_summary">
+			<PreferenceCategory android:title="Installed PlugIns">
+				<CheckBoxPreference  
+				android:key="BvgPlugIn"  
+				android:title="Bvg.de"  
+				android:summary="U-Bahn, Bus und Tram für München"  
+				/>
+				<CheckBoxPreference  
+				android:key="BahnDePlugIn"  
+				android:title="Bahn.de"  
+				android:summary="public transport germany"  
+				/>
+				<CheckBoxPreference  
+				android:key="MfgPlugIn"  
+				android:title="Mitfahrgelegenheit.de"  
+				android:summary="ridesharing agency"  
+				/>
+				<CheckBoxPreference  
+				android:key="TaxiPlugIn"  
+				android:title="Taxi Ruf Berlin"  
+				android:summary="Tarif-Rechner + gratis Tel"  
+				/>
+				<CheckBoxPreference  
+				android:key="FlightPlugIn"  
+				android:title="Fly"  
+				android:summary="flight shedules"  
+				/>
+				<CheckBoxPreference  
+				android:key="DrivePlugIn"  
+				android:title="Drive"  
+				android:summary="AndNav2 car navigation"
+				/>
+				<CheckBoxPreference  
+				android:key="BikePlugIn"  
+				android:title="Bike"  
+				android:summary="bike maps"  
+				/>
+				<CheckBoxPreference  
+				android:key="WalkPlugIn"  
+				android:title="Walk"  
+				android:summary="sightseeing + walking directions"  
+				/>
+				<CheckBoxPreference  
+				android:key="SkateboardPlugIn"  
+				android:title="Skate"  
+				android:summary="skateboard spots on the way"  
+				/>
+			</PreferenceCategory>
+		</PreferenceScreen>
+		
 	</PreferenceCategory>
 </PreferenceScreen>  

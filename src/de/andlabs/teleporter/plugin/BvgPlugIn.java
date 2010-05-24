@@ -1,7 +1,12 @@
-package de.andlabs.teleporter;
+package de.andlabs.teleporter.plugin;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import de.andlabs.teleporter.Place;
+import de.andlabs.teleporter.R;
+import de.andlabs.teleporter.Ride;
+import de.andlabs.teleporter.R.drawable;
 
 public class BvgPlugIn implements ITeleporterPlugIn {
 

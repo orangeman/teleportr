@@ -53,9 +53,9 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
         Place d = new Place();
         d.type = Place.TYPE_ADDRESS;
         d.name = "C-Base Raumstation";
-        d.address = "Rungestr 22, Berlin";
+        d.address = "Rungestr 20, Berlin";
         
-        multiplexer = new QueryMultiplexer(o, d);
+        multiplexer = new QueryMultiplexer(this, o, d);
         
   
         
@@ -115,7 +115,7 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
         fast.setProgress(priorities.getInt("fast", 0));
         green.setProgress(priorities.getInt("green", 0));
         social.setProgress(priorities.getInt("social", 0));
-        multiplexer.sort(priorities);
+        multiplexer.sort();
     }
     
     private class RidesAdapter extends EndlessAdapter {
@@ -146,15 +146,17 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
 
         @Override
         protected void appendCachedData() {
-            multiplexer.sort(priorities);
+            multiplexer.sort();
         }
         
         @Override
         protected void rebindPendingView(int position, View view) {
-            ((RideView)view).setRide(multiplexer.rides.get(position));
-            View child = view.findViewById(R.id.throbber);
-            child.setVisibility(View.GONE);
-            child.clearAnimation();
+            if (!multiplexer.rides.isEmpty()) {
+                ((RideView)view).setRide(multiplexer.rides.get(position));
+                View child = view.findViewById(R.id.throbber);
+                child.setVisibility(View.GONE);
+                child.clearAnimation();
+            }
         }
     }
     
@@ -162,7 +164,7 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         Log.d("aha", "changed "+progress);
         priorities.edit().putInt((String)seekBar.getTag(), progress).commit();
-        multiplexer.sort(priorities);
+        multiplexer.sort();
         getListView().invalidateViews();
     }
 

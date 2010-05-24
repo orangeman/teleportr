@@ -20,15 +20,11 @@
     <string name="green">green</string>
     <string name="social">social</string>
 
-    <string name="settings_title">title</string>
-    <string name="settings_dialog">dialog</string>
-    <string name="settings_on">on</string>
-    <string name="settings_off">off</string>
-
     <string name="dialog_yes">Yeah!</string>
     <string name="dialog_no">Nö!</string>
 
     <string name="autocompletion_settings_summary">cities, streets, stations, etc.</string>
+    <string name="plugIns_settings_summary">search results..</string>
     <string name="downloads_activity_titel">Autocompletion downloads</string>
     <string name="downloads_fetch_progress">downloads for this area..</string>
     <string name="downloading_prog_dnld">is beeing gedowngeloadedet..</string>
