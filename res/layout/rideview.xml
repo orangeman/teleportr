@@ -60,6 +60,7 @@
 			android:id="@+id/hours_label"
 			android:textSize="11dip"
 			android:textColor="#77FFFFFF"
+			android:paddingLeft="-3dip"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_toRightOf="@id/hours"
@@ -71,6 +72,7 @@
 			android:textSize="46dip"
 			android:textStyle="bold"
 			android:textColor="#FFFFFF"
+			android:paddingLeft="3dip"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_toRightOf="@id/hours_label"
@@ -102,11 +104,9 @@
 			android:textSize="11dip"
 			android:textStyle="bold"
 			android:textColor="#FFFFFF"
-			android:paddingLeft="42dip"
+			android:paddingLeft="161dip"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_centerHorizontal="true" 
-			android:layout_alignParentBottom="true" 
 			android:layout_alignBaseline="@id/minutes"
 		></TextView>
 		
@@ -141,7 +141,7 @@
 			android:layout_alignRight="@id/arr"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignBottom="@id/duration"
+			android:layout_alignBottom="@id/in"
 		/>
 		<TextView
 			android:id="@+id/price"
@@ -152,7 +152,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_toLeftOf="@id/currency"
-			android:layout_alignBaseline="@id/duration"
+			android:layout_alignBaseline="@id/in"
 		></TextView>
 		
 		<ImageView android:id="@+id/throbber"
