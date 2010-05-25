@@ -74,9 +74,9 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
         setListAdapter(new RidesAdapter(new BaseAdapter() {
             
             @Override
-            public View getView(int position, View view, ViewGroup parent) {
-                if (view == null)
-                    view = getLayoutInflater().inflate(R.layout.rideview, parent, false);
+            public View getView(int position, View v, ViewGroup parent) {
+//                if (view == null)
+                   View view = getLayoutInflater().inflate(R.layout.rideview, parent, false);
                 
                 ((RideView)view).setRide((Ride) multiplexer.rides.get(position));
                 view.findViewById(R.id.throbber).setVisibility(View.GONE);

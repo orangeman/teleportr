@@ -44,7 +44,7 @@
                 android:authorities="de.andlabs.teleporter"
                 android:syncable="false" />
 
-		<activity android:name="RidesActivity">
+		<activity android:name="RidesActivity" android:screenOrientation="portrait">
 			<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

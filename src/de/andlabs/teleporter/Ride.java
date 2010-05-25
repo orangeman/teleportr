@@ -2,6 +2,8 @@ package de.andlabs.teleporter;
 
 import java.util.Date;
 
+import android.content.Intent;
+
 public class Ride {
 
     public final static int MODE_TELEPORTER = 0;
@@ -29,6 +31,7 @@ public class Ride {
     public int fast;
     public int green;
     public int social;
+    public Intent intent;
 
     @Override
     public int hashCode() {
