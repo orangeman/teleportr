@@ -55,21 +55,26 @@ public class RideView extends RelativeLayout {
             dep.setText(new SimpleDateFormat("hh:mm").format(ride.dep));
             arr.setText(new SimpleDateFormat("hh:mm").format(ride.arr));
         }
-        if (waitingTime < 100) {
+//        if (waitingTime < 100) {
+        if (waitingTime < 60) {
             minutes.setText(String.valueOf(waitingTime));
             minutes.setTextSize(46);
             hours.setVisibility(GONE);
             hours_label.setVisibility(GONE);
-        } else if (waitingTime < 36000000) {
+        } else if (waitingTime < 10*60) {
             hours.setText(String.valueOf((int)waitingTime/60));
             hours.setVisibility(VISIBLE);
             hours_label.setVisibility(VISIBLE);
             minutes.setText(String.valueOf(waitingTime%60));
             minutes.setTextSize(20);
+        } else if (waitingTime < 100*60) {
+            hours.setText(String.valueOf((int)waitingTime/60));
+            hours.setVisibility(VISIBLE);
+            hours_label.setVisibility(VISIBLE);
         }
-        if (travelTime < 100)
+        if (travelTime < 60)
             duration.setText(travelTime+" min");
-        else if (travelTime < 86400000)
+        else if (travelTime < 24*60)
             duration.setText(((int)travelTime/60)+"h "+travelTime%60+"min");
         else
             duration.setText("toooooo long!!!");
