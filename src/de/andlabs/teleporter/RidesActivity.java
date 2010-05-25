@@ -15,11 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SlidingDrawer;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -36,6 +39,8 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
     private SeekBar social;
     private SharedPreferences priorities;
     private QueryMultiplexer multiplexer;
+    private RotateAnimation rotate;
+    private ProgressBar progress;
 
     /** Called when the activity is first created. */
     @Override
@@ -71,17 +76,27 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
             }
         });
         
-        setListAdapter(new RidesAdapter(new BaseAdapter() {
+        rotate = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(600);
+        rotate.setRepeatMode(Animation.RESTART);
+        rotate.setRepeatCount(Animation.INFINITE);
+        progress = new ProgressBar(this);
+        LayoutParams params = new FrameLayout.LayoutParams(this,null);
+        progress.setLayoutParams(params);
+        
+        setListAdapter(new BaseAdapter() {
             
             @Override
-            public View getView(int position, View v, ViewGroup parent) {
-//                if (view == null)
-                   View view = getLayoutInflater().inflate(R.layout.rideview, parent, false);
-                
-                ((RideView)view).setRide((Ride) multiplexer.rides.get(position));
-                view.findViewById(R.id.throbber).setVisibility(View.GONE);
-                view.findViewById(R.id.throbber).clearAnimation();;
-                return view;
+            public View getView(int position, View view, ViewGroup parent) {
+                if (view == null)
+                    view = getLayoutInflater().inflate(R.layout.rideview, parent, false);
+                if (position < multiplexer.rides.size()) {
+                    ((RideView)view).setRide((Ride) multiplexer.rides.get(position));
+                    return view;
+                } else {
+                    multiplexer.searchLater();
+                    return progress;
+                }
             }
             
             @Override
@@ -99,17 +114,29 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
             
             @Override
             public int getCount() {
-                return multiplexer.rides.size();
+                return multiplexer.rides.size()+1;
             }
 
             @Override
             public boolean hasStableIds() {
                 return false;
             }
+
+            @Override
+            public int getItemViewType(int position) {
+                if (position < multiplexer.rides.size())
+                    return 0;
+                else
+                    return 1;
+            }
+
+            @Override
+            public int getViewTypeCount() {
+                return 2;
+            }
             
             
-        }));
-        
+        });
         
         fun = ((SeekBar)findViewById(R.id.fun));
         eco = ((SeekBar)findViewById(R.id.eco));
@@ -131,48 +158,7 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
         multiplexer.sort();
     }
     
-    private class RidesAdapter extends EndlessAdapter {
-
-        private RotateAnimation rotate;
-
-        public RidesAdapter(ListAdapter wrapped) {
-            super(wrapped);
-            rotate = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            rotate.setDuration(600);
-            rotate.setRepeatMode(Animation.RESTART);
-            rotate.setRepeatCount(Animation.INFINITE);
-        }
-        
-        @Override
-        protected View getPendingView(ViewGroup parent) {
-            View v = getLayoutInflater().inflate(R.layout.rideview, parent, false);
-            View child = v.findViewById(R.id.throbber);
-            child.setVisibility(View.VISIBLE);
-            child.startAnimation(rotate);
-            return v;
-        }
-
-        @Override
-        protected boolean cacheInBackground() {
-            return multiplexer.searchLater();
-        }
-
-        @Override
-        protected void appendCachedData() {
-            multiplexer.sort();
-            this.notifyDataSetChanged();
-        }
-        
-        @Override
-        protected void rebindPendingView(int position, View view) {
-            if (!multiplexer.rides.isEmpty() && position < multiplexer.rides.size()) {
-                ((RideView)view).setRide((Ride) multiplexer.rides.get(position));
-                View child = view.findViewById(R.id.throbber);
-                child.setVisibility(View.GONE);
-                child.clearAnimation();
-            }
-        }
-    }
+ 
     
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -213,6 +199,10 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {}
+
+    public void datasetChanged() {
+        getListView().invalidateViews();
+    }
 
     
     

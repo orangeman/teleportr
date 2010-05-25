@@ -36,6 +36,7 @@ public class QueryMultiplexer {
     private BroadcastReceiver mPluginResponseReceiver;
     private final Context ctx;
     private Handler mUpdateHandler;
+    private Thread worker;
 
     public QueryMultiplexer(Context ctx, Place o, Place d) {
         this.ctx = ctx;
@@ -118,65 +119,84 @@ public class QueryMultiplexer {
     public boolean searchLater() {
         // TODO just query just plugins that ...
         // TODO use ThreadPoolExecutor ...
-        for (ITeleporterPlugIn p : plugIns) {
-            Log.d(TAG, "query plugin "+p);
 
-            final long requestTimestamp;
-            if(this.mLastSearchTimestamp == 0 ) {
-                requestTimestamp = System.currentTimeMillis();
-            } else {
-                requestTimestamp = this.mLastSearchTimestamp + 300000; // 5 Minutes
+        if (worker != null && worker.isAlive())
+            return false;
+            
+        worker = new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                for (ITeleporterPlugIn p : plugIns) {
+                    Log.d(TAG, "query plugin "+p);
+                    
+                    final long requestTimestamp;
+                    if(mLastSearchTimestamp == 0 ) {
+                        requestTimestamp = System.currentTimeMillis();
+                    } else {
+                        requestTimestamp = mLastSearchTimestamp + 300000; // 5 Minutes
+                    }
+                    
+                    nextRides.addAll(p.find(orig, dest, new Date(requestTimestamp)));
+                    
+                    mLastSearchTimestamp = requestTimestamp;
+                    mUpdateHandler.post(new Runnable() {
+                        
+                        @Override
+                        public void run() {
+                            rides.addAll(nextRides);
+                            nextRides.clear();
+                            ((RidesActivity)ctx).datasetChanged();
+                        }
+                    });
+                }
+                
+                Intent requestIntent = new Intent("org.teleporter.intent.action.RECEIVE_REQUEST");
+                requestIntent.putExtra("origLatitude", orig.lat);
+                requestIntent.putExtra("origLongitude", orig.lon);
+                requestIntent.putExtra("destLatitude", dest.lat);
+                requestIntent.putExtra("destLongitude", dest.lon);
+                ctx.sendBroadcast(requestIntent);
+                
             }
-
-            nextRides.addAll(p.find(orig, dest, new Date(requestTimestamp)));
-
-            this.mLastSearchTimestamp = requestTimestamp;
-        }
-
-        Intent requestIntent = new Intent("org.teleporter.intent.action.RECEIVE_REQUEST");
-        requestIntent.putExtra("origLatitude", orig.lat);
-        requestIntent.putExtra("origLongitude", orig.lon);
-        requestIntent.putExtra("destLatitude", dest.lat);
-        requestIntent.putExtra("destLongitude", dest.lon);
-        this.ctx.sendBroadcast(requestIntent);
-
+        });
+        worker.start();
         return true;
     }
 
     public void sort() {
-        rides.addAll(nextRides);
-        nextRides.clear();
 
         priorities = (Map<String, Integer>) ctx.getSharedPreferences("priorities", ctx.MODE_PRIVATE).getAll();
-        Collections.sort(rides, new Comparator<Ride>() {
-
-            @Override
-            public int compare(Ride r1, Ride r2) {
-                // TODO Neue Faktor für Score: "Quickness" (Abfahrtszeit minus Jetzt)
-                // TODO Faktoren normalisieren
-                int score1= r1.fun * priorities.get("fun") +
-                r1.eco * priorities.get("eco") +
-                r1.fast * priorities.get("fast") +
-                r1.green * priorities.get("green") +
-                r1.social * priorities.get("social");
-                int score2= r2.fun * priorities.get("fun") +
-                r2.eco * priorities.get("eco") +
-                r2.fast * priorities.get("fast") +
-                r2.green * priorities.get("green") +
-                r2.social * priorities.get("social");
-                //                Log.d("aha", "score1: "+score1 + ",  score2: "+score2);
-                if (score1 < score2)
-                    return 1;
-                else if (score1 > score2)
-                    return -1;
-                else {
-                    if (r1.dep.after(r2.dep))
-                        return 1;
-                    if (r1.dep.before(r2.dep))
-                        return -1;
-                    return 0;
-                }
-            }
-        });
+//        Collections.sort(rides, new Comparator<Ride>() {
+//
+//            @Override
+//            public int compare(Ride r1, Ride r2) {
+//                // TODO Neue Faktor für Score: "Quickness" (Abfahrtszeit minus Jetzt)
+//                // TODO Faktoren normalisieren
+//                int score1= r1.fun * priorities.get("fun") +
+//                r1.eco * priorities.get("eco") +
+//                r1.fast * priorities.get("fast") +
+//                r1.green * priorities.get("green") +
+//                r1.social * priorities.get("social");
+//                int score2= r2.fun * priorities.get("fun") +
+//                r2.eco * priorities.get("eco") +
+//                r2.fast * priorities.get("fast") +
+//                r2.green * priorities.get("green") +
+//                r2.social * priorities.get("social");
+//                //                Log.d("aha", "score1: "+score1 + ",  score2: "+score2);
+//                if (score1 < score2)
+//                    return 1;
+//                else if (score1 > score2)
+//                    return -1;
+//                else {
+//                    if (r1.dep.after(r2.dep))
+//                        return 1;
+//                    if (r1.dep.before(r2.dep))
+//                        return -1;
+//                    return 0;
+//                }
+//            }
+//        });
     }
 }
