@@ -1,6 +1,7 @@
 package de.andlabs.teleporter;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -41,7 +42,19 @@ public class RideView extends RelativeLayout {
 
 
     public void setRide(Ride ride) {
-        int waitingTime = (int)(ride.dep.getTime()-System.currentTimeMillis())/60000;
+        final long waitingTime;
+        final long travelTime; 
+        if(ride.dep == null || ride.arr == null) {
+            waitingTime = 0;
+            travelTime = ride.duration / 60000;
+            dep.setText(new SimpleDateFormat("hh:mm").format(new Date()));
+            arr.setText(new SimpleDateFormat("hh:mm").format(new Date(System.currentTimeMillis()+ride.duration)));
+        } else {
+            waitingTime = (int)(ride.dep.getTime()-System.currentTimeMillis())/60000;
+            travelTime = (int) (ride.arr.getTime() - ride.dep.getTime()) / 60000;
+            dep.setText(new SimpleDateFormat("hh:mm").format(ride.dep));
+            arr.setText(new SimpleDateFormat("hh:mm").format(ride.arr));
+        }
         if (waitingTime < 100) {
             minutes.setText(String.valueOf(waitingTime));
             minutes.setTextSize(46);
@@ -54,7 +67,6 @@ public class RideView extends RelativeLayout {
             minutes.setText(String.valueOf(waitingTime%60));
             minutes.setTextSize(20);
         }
-        int travelTime = (int) (ride.arr.getTime() - ride.dep.getTime()) / 60000;
         if (travelTime < 100)
             duration.setText(travelTime+" min");
         else if (travelTime < 86400000)
@@ -62,8 +74,6 @@ public class RideView extends RelativeLayout {
         else
             duration.setText("toooooo long!!!");
         
-        dep.setText(new SimpleDateFormat("hh:mm").format(ride.dep));
-        arr.setText(new SimpleDateFormat("hh:mm").format(ride.arr));
 //        plugin.setImageResource(ride.plugin);
         
         price.setText(String.valueOf(((int)ride.price/100)));

@@ -131,9 +131,13 @@ abstract public class EndlessAdapter extends AdapterWrapper {
 		@Override
 		protected void onPostExecute(Void unused) {
 			appendCachedData();
-			rebindPendingView(pendingPosition, pendingView);
-			pendingView=null;
-			pendingPosition=-1;
+			onAdd();
 		}
+
+	}
+	public void onAdd() {
+	    rebindPendingView(pendingPosition, pendingView);
+	    pendingView=null;
+	    pendingPosition=-1;
 	}
 }

@@ -19,7 +19,6 @@ public class DrivePlugIn implements ITeleporterPlugIn {
         r.dest = d;
         r.dep = new Date(System.currentTimeMillis()+2*60000);
         r.arr = new Date(System.currentTimeMillis()+(2+22)*60000);
-        r.plugin = R.drawable.car;
         r.mode = Ride.MODE_DRIVE;
         r.fun = 1;
         r.eco = 1;

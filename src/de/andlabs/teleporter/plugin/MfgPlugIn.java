@@ -20,7 +20,6 @@ public class MfgPlugIn implements ITeleporterPlugIn {
         r.dest = d;
         r.dep = new Date(System.currentTimeMillis()+7*60000);
         r.arr = new Date(System.currentTimeMillis()+(7+22)*60000);
-        r.plugin = R.drawable.mfg;
         r.mode = Ride.MODE_MFG;
         r.price = 150;
         r.fun = 3;
@@ -36,7 +35,6 @@ public class MfgPlugIn implements ITeleporterPlugIn {
         r.dest = d;
         r.dep = new Date(System.currentTimeMillis()+8*60000);
         r.arr = new Date(System.currentTimeMillis()+(8+22)*60000);
-        r.plugin = R.drawable.taxi_teiler;
         r.mode = Ride.MODE_MFG;
         r.price = 320;
         r.fun = 3;

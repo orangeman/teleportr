@@ -50,10 +50,14 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
         o.type = Place.TYPE_ADDRESS;
         o.name = "Droidcamp - Dahlem Cube";
         o.address = "Takustraße 39, Berlin";
+        o.lat = 52457577;
+        o.lon = 13292519;
         Place d = new Place();
         d.type = Place.TYPE_ADDRESS;
         d.name = "C-Base Raumstation";
         d.address = "Rungestr 20, Berlin";
+        d.lat = 52512288;
+        d.lon = 13419910;
         
         multiplexer = new QueryMultiplexer(this, o, d);
         
@@ -74,16 +78,18 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
                 if (view == null)
                     view = getLayoutInflater().inflate(R.layout.rideview, parent, false);
                 
-                ((RideView)view).setRide(multiplexer.rides.get(position));
+                ((RideView)view).setRide((Ride) multiplexer.rides.get(position));
+                view.findViewById(R.id.throbber).setVisibility(View.GONE);
+                view.findViewById(R.id.throbber).clearAnimation();;
                 return view;
             }
             
             @Override
             public long getItemId(int position) {
                 if (position < multiplexer.rides.size())
-                    return multiplexer.rides.get(position).plugin;
+                    return multiplexer.rides.get(position).hashCode();
                 else 
-                    return position;
+                    return 2342;
             }
             
             @Override
@@ -95,6 +101,13 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
             public int getCount() {
                 return multiplexer.rides.size();
             }
+
+            @Override
+            public boolean hasStableIds() {
+                return false;
+            }
+            
+            
         }));
         
         
@@ -141,18 +154,19 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
 
         @Override
         protected boolean cacheInBackground() {
-            return multiplexer.searchNext();
+            return multiplexer.searchLater();
         }
 
         @Override
         protected void appendCachedData() {
             multiplexer.sort();
+            this.notifyDataSetChanged();
         }
         
         @Override
         protected void rebindPendingView(int position, View view) {
-            if (!multiplexer.rides.isEmpty()) {
-                ((RideView)view).setRide(multiplexer.rides.get(position));
+            if (!multiplexer.rides.isEmpty() && position < multiplexer.rides.size()) {
+                ((RideView)view).setRide((Ride) multiplexer.rides.get(position));
                 View child = view.findViewById(R.id.throbber);
                 child.setVisibility(View.GONE);
                 child.clearAnimation();

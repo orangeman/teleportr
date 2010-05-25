@@ -22,7 +22,6 @@ public class SkateboardPlugIn implements ITeleporterPlugIn {
         r.dest = d;
         r.dep = new Date(System.currentTimeMillis()+3*60000);
         r.arr = new Date(System.currentTimeMillis()+(3+123)*60000);
-        r.plugin = R.drawable.car;
         r.mode = Ride.MODE_SKATEBOARD;
         
         r.fun = 5;

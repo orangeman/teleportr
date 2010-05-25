@@ -24,8 +24,10 @@
 
      <ImageView
          android:id="@id/handle"
-         android:layout_width="3dip"
-         android:layout_height="0dip"
+         android:layout_width="75dip"
+         android:layout_height="142dip"
+         android:layout_gravity="bottom"
+         android:src="@drawable/close"
          />
 
      <LinearLayout android:id="@id/pane"

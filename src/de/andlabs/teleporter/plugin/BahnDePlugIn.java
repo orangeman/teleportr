@@ -76,7 +76,6 @@ public class BahnDePlugIn implements ITeleporterPlugIn {
                     r.mode = Ride.MODE_TRANSIT;
                     r.dep = dep;
                     r.arr = parseDate(m.group(4), m.group(5));
-                    r.plugin = R.drawable.bahn_de;
                     r.price = 240;
                     r.fun = 3;
                     r.eco = 3;
@@ -98,6 +97,8 @@ public class BahnDePlugIn implements ITeleporterPlugIn {
         Date date = new Date();
         date.setHours(Integer.parseInt(hours));
         date.setMinutes(Integer.parseInt(minutes));
+        date.setSeconds(0);
+        date.setTime((date.getTime() / 1000) * 1000);
         if (System.currentTimeMillis() - date.getTime() > 36000000) { // Mitternacht..
             long oneDay = (long) 1000.0 * 60 * 60 * 24;
             date.setTime(date.getTime() + oneDay);

@@ -22,7 +22,6 @@ public class TaxiPlugIn implements ITeleporterPlugIn {
         r.dest = d;
         r.dep = new Date(System.currentTimeMillis()+5*60000);
         r.arr = new Date(System.currentTimeMillis()+(5+22)*60000);
-        r.plugin = R.drawable.taxi;
         r.mode = Ride.MODE_TAXI;
         r.price = 2300;
         r.fun = 1;
