@@ -15,6 +15,8 @@ import de.andlabs.teleporter.R;
 import de.andlabs.teleporter.Ride;
 import de.andlabs.teleporter.R.drawable;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 
 public class BahnDePlugIn implements ITeleporterPlugIn {
@@ -38,7 +40,7 @@ public class BahnDePlugIn implements ITeleporterPlugIn {
         url.append("n=1");
         switch (orig.type) {
             case Place.TYPE_ADDRESS:
-                url.append("&f=2&s=").append(URLEncoder.encode(orig.address));
+                url.append("&f=2&s=").append(URLEncoder.encode(orig.address+"!"));
                 break;
             case Place.TYPE_STATION:
                 url.append("&f=1&s=").append(URLEncoder.encode(orig.name+", "+orig.address));
@@ -46,7 +48,7 @@ public class BahnDePlugIn implements ITeleporterPlugIn {
         }
         switch (dest.type) {
             case Place.TYPE_ADDRESS:
-                url.append("&o=2&z=").append(URLEncoder.encode(dest.address));
+                url.append("&o=2&z=").append(URLEncoder.encode(dest.address+"!"));
                 break;
             case Place.TYPE_STATION:
                 url.append("&o=1&z=").append(URLEncoder.encode(dest.name+", "+dest.address));
@@ -65,6 +67,7 @@ public class BahnDePlugIn implements ITeleporterPlugIn {
             MatchResult m;
             rides.clear();
             Scanner scanner = new Scanner(client.execute(new HttpGet(url.toString())).getEntity().getContent(), "iso-8859-1");
+        Log.d(TAG, "scanned url: "+url.toString());
             while (scanner.findWithinHorizon("<a href=\"([^\"]*)\">(\\d\\d):(\\d\\d)<br />(\\d\\d):(\\d\\d)", 10000) != null) {
                 m = scanner.match();
                 Log.d(TAG, "found :) "+m);
@@ -82,6 +85,10 @@ public class BahnDePlugIn implements ITeleporterPlugIn {
                     r.fast = 1;
                     r.social = 2;
                     r.green = 4;
+                    String uriString = m.group(1).replace("&amp;", "&");
+                    Log.d(TAG, "uri: "+uriString);
+                    r.intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uriString));
+                    
                     rides.add(r);
                 }
             }

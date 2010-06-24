@@ -27,7 +27,7 @@
     <string name="plugIns_settings_summary">search results..</string>
     <string name="downloads_activity_titel">Autocompletion downloads</string>
     <string name="downloads_fetch_progress">downloads for this area..</string>
-    <string name="downloading_prog_dnld">is beeing gedowngeloadedet..</string>
-    <string name="downloading_prog_indx">is beeing geindexifiziert..</string>
-    <string name="download_error">Meest! something went wrong da</string>
+    <string name="downloading_prog_dnld">downloading..</string>
+    <string name="downloading_prog_indx">indexing..</string>
+    <string name="download_error">Meest! something went wrong</string>
 </resources>

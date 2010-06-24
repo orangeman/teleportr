@@ -61,6 +61,11 @@
 				android:title="Skate"  
 				android:summary="skateboard spots on the way"  
 				/>
+				<CheckBoxPreference  
+				android:key="TeleporterPlugIn"  
+				android:title="Energy!"  
+				android:summary="beam me there.."  
+				/>
 			</PreferenceCategory>
 		</PreferenceScreen>
 		

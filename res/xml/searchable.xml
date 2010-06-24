@@ -6,6 +6,8 @@
         android:includeInGlobalSearch="true"
         android:queryAfterZeroResults="true"
         android:searchSuggestThreshold="0"
+        android:searchButtonText="Hui"
+        android:searchMode="queryRewriteFromText"
         android:searchSuggestAuthority="de.andlabs.teleporter"
         android:searchSettingsDescription="@string/search_settings_description"
         android:searchSuggestIntentAction="android.intent.action.SEARCH"

@@ -27,8 +27,6 @@ import android.widget.SeekBar;
 import android.widget.SlidingDrawer;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-import com.commonsware.cwac.endless.EndlessAdapter;
-
 public class RidesActivity extends ListActivity implements OnSeekBarChangeListener {
 
     private ArrayList<Ride> rides;
@@ -54,7 +52,7 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
         Place o = new Place();
         o.type = Place.TYPE_ADDRESS;
         o.name = "Droidcamp - Dahlem Cube";
-        o.address = "Takustraße 39, Berlin";
+        o.address = "Nobelstrasse 10, Stuttgart";
         o.lat = 52457577;
         o.lon = 13292519;
         Place d = new Place();
@@ -81,8 +79,8 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
         rotate.setRepeatMode(Animation.RESTART);
         rotate.setRepeatCount(Animation.INFINITE);
         progress = new ProgressBar(this);
-        LayoutParams params = new FrameLayout.LayoutParams(this,null);
-        progress.setLayoutParams(params);
+//        LayoutParams params = new FrameLayout.LayoutParams(this,null);
+//        progress.setLayoutParams(params);
         
         setListAdapter(new BaseAdapter() {
             
@@ -92,6 +90,10 @@ public class RidesActivity extends ListActivity implements OnSeekBarChangeListen
                     view = getLayoutInflater().inflate(R.layout.rideview, parent, false);
                 if (position < multiplexer.rides.size()) {
                     ((RideView)view).setRide((Ride) multiplexer.rides.get(position));
+                    if (position%2 == 0)
+                        view.startAnimation(rotate);
+                    else 
+                        view.clearAnimation();
                     return view;
                 } else {
                     multiplexer.searchLater();

@@ -69,51 +69,54 @@ public class QueryMultiplexer {
             }
         };
         plugIns = new ArrayList<ITeleporterPlugIn>();
-        SharedPreferences plugInSettings = ctx.getSharedPreferences("plugIns", ctx.MODE_PRIVATE);
-        try {
-            for (String p : plugInSettings.getAll().keySet()) {
-                Log.d(TAG, "plugin "+p);
-                if (plugInSettings.getBoolean(p, false)){
-                    Log.d(TAG, "add plugin "+p);
-                    plugIns.add((ITeleporterPlugIn) Class.forName("de.andlabs.teleporter.plugin."+p).newInstance());
+        if (o!=null && d!=null) {
+            SharedPreferences plugInSettings = ctx.getSharedPreferences("plugIns", ctx.MODE_PRIVATE);
+            try {
+                for (String p : plugInSettings.getAll().keySet()) {
+                    Log.d(TAG, "plugin "+p);
+                    if (plugInSettings.getBoolean(p, false)){
+                        Log.d(TAG, "add plugin "+p);
+                        plugIns.add((ITeleporterPlugIn) Class.forName("de.andlabs.teleporter.plugin."+p).newInstance());
+                    }
                 }
+            } catch (Exception e) {
+                Log.e(TAG, "Schade!");
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Schade!");
-            e.printStackTrace();
+            priorities = (Map<String, Integer>) ctx.getSharedPreferences("priorities", ctx.MODE_PRIVATE).getAll();
+            
         }
-        priorities = (Map<String, Integer>) ctx.getSharedPreferences("priorities", ctx.MODE_PRIVATE).getAll();
 
         this.mUpdateHandler = new Handler();
 
-        this.mPluginResponseReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "Plugin Response Received.");
-                final int duration = intent.getIntExtra("dur", -1);
+//        this.mPluginResponseReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                Log.d(TAG, "Plugin Response Received.");
+//                final int duration = intent.getIntExtra("dur", -1);
+//
+//                final Ride ride = new Ride();
+//                ride.duration = duration;
+//                ride.orig = orig;
+//                ride.dest = dest;
+//                ride.mode = Ride.MODE_DRIVE;
+//                ride.fun = 1;
+//                ride.eco = 1;
+//                ride.fast = 5;
+//                ride.social = 1;
+//                ride.green = 1;
+//                
+//                mUpdateHandler.post(new Runnable() {
+//                    
+//                    @Override
+//                    public void run() {
+//                        nextRides.add(ride);
+//                    }
+//                });
+//            }
+//        };
 
-                final Ride ride = new Ride();
-                ride.duration = duration;
-                ride.orig = orig;
-                ride.dest = dest;
-                ride.mode = Ride.MODE_DRIVE;
-                ride.fun = 1;
-                ride.eco = 1;
-                ride.fast = 5;
-                ride.social = 1;
-                ride.green = 1;
-                
-                mUpdateHandler.post(new Runnable() {
-                    
-                    @Override
-                    public void run() {
-                        nextRides.add(ride);
-                    }
-                });
-            }
-        };
-
-        this.ctx.registerReceiver(this.mPluginResponseReceiver, new IntentFilter("org.teleporter.intent.action.RECEIVE_RESPONSE"));
+//        this.ctx.registerReceiver(this.mPluginResponseReceiver, new IntentFilter("org.teleporter.intent.action.RECEIVE_RESPONSE"));
     }
 
     public boolean searchLater() {
@@ -147,17 +150,17 @@ public class QueryMultiplexer {
                         public void run() {
                             rides.addAll(nextRides);
                             nextRides.clear();
-                            ((RidesActivity)ctx).datasetChanged();
+                            ((Main)ctx).datasetChanged();
                         }
                     });
                 }
                 
-                Intent requestIntent = new Intent("org.teleporter.intent.action.RECEIVE_REQUEST");
-                requestIntent.putExtra("origLatitude", orig.lat);
-                requestIntent.putExtra("origLongitude", orig.lon);
-                requestIntent.putExtra("destLatitude", dest.lat);
-                requestIntent.putExtra("destLongitude", dest.lon);
-                ctx.sendBroadcast(requestIntent);
+//                Intent requestIntent = new Intent("org.teleporter.intent.action.RECEIVE_REQUEST");
+//                requestIntent.putExtra("origLatitude", orig.lat);
+//                requestIntent.putExtra("origLongitude", orig.lon);
+//                requestIntent.putExtra("destLatitude", dest.lat);
+//                requestIntent.putExtra("destLongitude", dest.lon);
+//                ctx.sendBroadcast(requestIntent);
                 
             }
         });

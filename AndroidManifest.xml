@@ -44,10 +44,10 @@
                 android:authorities="de.andlabs.teleporter"
                 android:syncable="false" />
 
-		<activity android:name="RidesActivity" android:screenOrientation="portrait">
+		<activity android:name="TeleporterActivity" android:screenOrientation="portrait">
 			<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="BEAM" />
+                <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
      </activity>
     <activity android:name="SettingsActivity"></activity>

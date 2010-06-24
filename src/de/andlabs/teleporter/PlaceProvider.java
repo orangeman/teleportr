@@ -43,6 +43,9 @@ public class PlaceProvider extends ContentProvider implements OnSharedPreference
                         + "icon INTEGER,"
                         + "tlp_id INTEGER"
                         + ");");
+		    db.execSQL("INSERT INTO myplaces values(1, 'Shackspace', 'Stuttgart', 'Äusserer Nordbahnhof 12', "+R.drawable.shackspace+", 23);");
+		    db.execSQL("INSERT INTO myplaces values(2, 'Droidcamp', 'Stuttgart', 'Nobelstrasse 10', "+R.drawable.droidcamp+", 42);");
+		    Log.d(TAG, "created DB");
 		}
 
 		@Override
@@ -55,13 +58,14 @@ public class PlaceProvider extends ContentProvider implements OnSharedPreference
 
 	private static final String SQL = 
 	    "SELECT _id, " +
+	            "_id AS "+SearchManager.SUGGEST_COLUMN_INTENT_DATA+", "+
 	            "name AS "+SearchManager.SUGGEST_COLUMN_TEXT_1+", " +
             	"%1$s AS "+SearchManager.SUGGEST_COLUMN_TEXT_2+", " +
             	"icon AS "+SearchManager.SUGGEST_COLUMN_ICON_1+", " +
             	"'"+R.drawable.icon+"' AS "+SearchManager.SUGGEST_COLUMN_ICON_2+", " +
-            	"name || ', ' || %1$s AS "+SearchManager.SUGGEST_COLUMN_QUERY+", "+
+            	"%2$s || ', ' || %1$s AS "+SearchManager.SUGGEST_COLUMN_QUERY+", "+
             	"'"+SearchManager.SUGGEST_NEVER_MAKE_SHORTCUT+"' AS "+SearchManager.SUGGEST_COLUMN_SHORTCUT_ID+" "+
-            	"FROM %2$s " +
+            	"FROM %3$s " +
             	"WHERE name LIKE '%%1$s%%%%' ";
 	private String sql;
 	
@@ -88,7 +92,7 @@ public class PlaceProvider extends ContentProvider implements OnSharedPreference
         
         StringBuilder builder = new StringBuilder();
         String dir = Environment.getExternalStorageDirectory().getPath()+"/teleporter/";
-        builder.append(String.format(SQL, "city", "myplaces"));
+        builder.append(String.format(SQL, "city", "address", "myplaces"));
         for (String file : autocompletion.getAll().keySet()) {
             if (autocompletion.getBoolean(file, false)) {
                 String path = dir+file;
@@ -99,7 +103,7 @@ public class PlaceProvider extends ContentProvider implements OnSharedPreference
                 String name = file.split("\\.")[0];
                 db.getWritableDatabase().execSQL("ATTACH DATABASE '"+path+"' AS '"+name.replace("-", "_")+"';");
                 builder.append("UNION ALL ");
-                builder.append(String.format(SQL, "'"+name.substring(name.indexOf("_")+1)+"'", name.replace("-", "_")+".places"));
+                builder.append(String.format(SQL, "'"+name.substring(name.indexOf("_")+1)+"'", "name", name.replace("-", "_")+".places"));
                 Log.d(TAG, name);
             }
         }
@@ -134,7 +138,7 @@ public class PlaceProvider extends ContentProvider implements OnSharedPreference
 		String query;
         switch (sUriMatcher.match(uri)) {
 		case PLACES:
-		    query = uri.getPathSegments().size() == 2 ? uri.getLastPathSegment():"";
+		    query = uri.getPathSegments().size() == 2 ? uri.getLastPathSegment(): "";
 			cursor = db.getReadableDatabase().rawQuery(String.format(sql, query), null);
 //					"SELECT _id, " +
 //					    "name AS "+SearchManager.SUGGEST_COLUMN_TEXT_1+", " +
